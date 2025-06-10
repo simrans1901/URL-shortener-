@@ -3,10 +3,11 @@ const url_model = require("./models/shorturl.js");
 const mongoose = require("mongoose");
 const app = express();
 
-// constant
+// Constants
 const PORT = 5000;
 const LOCALHOST_IP = "127.0.0.1";
 const MONGO_URI = `mongodb://${LOCALHOST_IP}:27017/Url_Shortner`;
+const LOCAL_URL = `http://localhost:${PORT}`;
 
 const connectMongoDB = async (mongoURI) => {
   try {
@@ -52,5 +53,11 @@ app.post("/:id", async (req, res) => {
 
 app.listen(PORT, () => {
   connectMongoDB(MONGO_URI);
-  console.log(`Server is running on PORT ${PORT}`);
+  console.log(`Server is running on:\x1b[36m ${LOCAL_URL} \x1b[0m`);
+  
+  // Auto-open in default browser (Windows)
+  if (process.platform === 'win32') {
+    const { exec } = require('child_process');
+    exec(`start ${LOCAL_URL}`);
+  }
 });
