@@ -1,6 +1,13 @@
-const express = require("express");
-const url_model = require("./models/shorturl.js");
-const mongoose = require("mongoose");
+import express from "express";
+import mongoose from "mongoose";
+import url_model from "./models/shorturl.js";
+import { exec } from 'child_process';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 // Constants
@@ -38,9 +45,9 @@ app.get("/:shorturl", async (req, res) => {
   if (shorturl == null) return res.sendStatus(404);
 
   shorturl.clicks++;
-  shorturl.save();
+  await shorturl.save();
 
-  await res.redirect(shorturl.full);
+  res.redirect(shorturl.full);
 });
 
 app.post("/:id", async (req, res) => {
@@ -57,7 +64,6 @@ app.listen(PORT, () => {
   
   // Auto-open in default browser (Windows)
   if (process.platform === 'win32') {
-    const { exec } = require('child_process');
     exec(`start ${LOCAL_URL}`);
   }
 });
